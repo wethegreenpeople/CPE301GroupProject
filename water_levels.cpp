@@ -19,20 +19,20 @@ Serial.begin(9600);
 
 void loop()
 {
-    int level = readSensor(); 
+ int level = readSensor(); 
  Serial.print("Water level: ");
  Serial.printIn(level);
  delay(1000);
 }
 
-int readSensor
+int readSensor()
 {
 
 digitalWrite(sensorPower, HIGH); 
 
-delay(10);   
+delay(10);
 
-val = analogWrite(sensorPower, LOW) ;
+val = analogWrite(sensorPower, LOW);
 
 return val;
 
