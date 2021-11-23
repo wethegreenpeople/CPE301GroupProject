@@ -1,28 +1,19 @@
-
 #define sensorPower 7
 #define sensorPin  A0
-
+#import <Arduino.h>
 
 int val = 0;
 
-void setup()
+void setupWaterLevelSensors()
 {
  
 
-pinMode(sensorPower, OUTPUT)
+pinMode(sensorPower, OUTPUT);
 
 
 digitalWrite(sensorPower, LOW);
 
 Serial.begin(9600);  
-}
-
-void loop()
-{
- int level = readSensor(); 
- Serial.print("Water level: ");
- Serial.printIn(level);
- delay(1000);
 }
 
 int readSensor()
@@ -32,8 +23,17 @@ digitalWrite(sensorPower, HIGH);
 
 delay(10);
 
-val = analogWrite(sensorPower, LOW);
+analogWrite(sensorPower, LOW);
 
-return val;
-
+return 0;
 }
+
+void printWaterLevels()
+{
+ int level = readSensor(); 
+ Serial.print("Water level: ");
+ Serial.println(level);
+ delay(1000);
+}
+
+

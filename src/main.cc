@@ -17,8 +17,8 @@ void main()
 {
     double tempReading = TemperatureSensor(); // get value from temperature sensor
     double waterReading = WaterLevelSensor(); // 
-    double waterLevel = ; // need to decide what the minimum water level needs to be
-    double threshold = ; // need to decide what the minimum temperature (in Celcius per the library function) needs to be
+    double waterLevel = 0; // need to decide what the minimum water level needs to be
+    double threshold = 0; // need to decide what the minimum temperature (in Celcius per the library function) needs to be
     
     while ((threshold <= tempReading) && (waterLevel <= waterReading)) // See if it's hot enough to run the fan and that the water level is high enough
     {
