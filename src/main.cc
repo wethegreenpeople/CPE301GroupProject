@@ -1,9 +1,14 @@
-#include "DHT.h"
+#include <Adafruit_Sensor.h>
+#include <DHT.h>
+#include <DHT_U.h>
+
 #define DHTPIN 2 // Digital pin connected to the DHT sensor
 #define DHTTYPE DHT11 // DHT 11
 #define sensorPower 7
-#define sensorPin A0
+
 int val = 0;
+DHT_Unified dht(DHTPIN, DHTTYPE);
+uint32_t delayMS;
 
 void setup()
 {
@@ -53,4 +58,23 @@ void WaterSensorLoop() // gets water level and prints it
 double runMotor()
 {
 
+}
+
+double getHumidityPercentage() {
+  sensors_event_t event;
+  
+  // Get humidity event and print its value.
+  dht.humidity().getEvent(&event);
+  if (isnan(event.relative_humidity)) {
+    return -1;
+  }
+  else {
+    return event.relative_humidity;
+  }
+}
+
+void displayHumidityPercentage() {
+  delay(delayMS);
+  double value = getHumidityPercentage();
+  Serial.print(value);
 }
