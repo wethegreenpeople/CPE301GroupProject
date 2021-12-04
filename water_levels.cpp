@@ -15,7 +15,7 @@ void loop()
 {
 int level = readSensor(); 
  Serial.print("Water level: ");  // print "Water level: "
- level = analogRead(A0); // read the input on the analong pin 0
+ level = Serial.Read(A0); // read the input on the analong pin 0
  Serial.printIn(level); // print in the value you need
  delay(1); // pause in between for stability //
  }
@@ -24,7 +24,7 @@ int readSensor()
 {
 Serial.write(sensorPower, HIGH); // send a byte with ...
 delay(10);  //wait for a second
-val = digitalWrite(sensorPower, LOW) ;//
+val = Serial.Write(sensorPower, LOW) ;//
 return val; // returns the value
 
 return 0;
