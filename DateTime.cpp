@@ -1,34 +1,75 @@
 
- #include<DateTime.h> 
+ #include <Wire.h>
+#include <TimeLib.h>
+#include <DS1307RTC.h>
 
+const char *monthName[12] = {
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+};
 
-void setup()
-{
-lcd.begin(16.2) // set up the LCD's number of rows and columns
-DateTime.ync(812868312); // yearly time in seconds
-}
-void loop()
-{
-if(DateTime.available())
-  {
-     unsigned long prevtime = DateTime.now();
-     while( prevtime == DateTime.now());
-     DateTime.availabe(); // availabe date and time
-     digitalClockDisplay(); // Displays digital clock
+tmElements_t tm;
+
+void setup() {
+  bool parse=false;
+  bool config=false;
+
+  // get the date and time the compiler was run
+  if (getDate(__DATE__) && getTime(__TIME__)) {
+    parse = true;
+    // and configure the RTC with this info
+    if (RTC.write(tm)) {
+      config = true;
+    }
   }
 
+  Serial.begin(9600);
+  while (!Serial) ; // wait for Arduino Serial Monitor
+  delay(200);
+  if (parse && config) {
+    Serial.print("DS1307 configured Time=");
+    Serial.print(__TIME__);
+    Serial.print(", Date=");
+    Serial.println(__DATE__);
+  } else if (parse) {
+    Serial.println("DS1307 Communication Error :-{");
+    Serial.println("Please check your circuitry");
+  } else {
+    Serial.print("Could not parse info from the compiler, Time=\"");
+    Serial.print(__TIME__);
+    Serial.print("\", Date=\"");
+    Serial.print(__DATE__);
+    Serial.println("\"");
+  }
 }
-void printDigits(byte digits) 
+
+void loop() {
+}
+
+bool getTime(const char *str)
 {
-lcd.print(":");  // print out : on lcd
-if (digits < 10)   // check if the  digit is less then 10 and if so print a 0
-   lcd.print('0'); // print 0 on the lcd
-   lcd.print(digits,DEC);
+  int Hour, Min, Sec;
+
+  if (sscanf(str, "%d:%d:%d", &Hour, &Min, &Sec) != 3) return false;
+  tm.Hour = Hour;
+  tm.Minute = Min;
+  tm.Second = Sec;
+  return true;
 }
-void digitalClockDisplay(){
- lcd.home();
- // digital clock display of current time
- lcd.print(DateTime.Hour,DEC);  
- printDigits(DateTime.Minute);  // print out date in minutes 
- printDigits(DateTime.Second);  // print out date time in seconds
+
+bool getDate(const char *str)
+{
+  char Month[12];
+  int Day, Year;
+  uint8_t monthIndex;
+
+  if (sscanf(str, "%s %d %d", Month, &Day, &Year) != 3) return false;
+  for (monthIndex = 0; monthIndex < 12; monthIndex++) {
+    if (strcmp(Month, monthName[monthIndex]) == 0) break;
+  }
+  if (monthIndex >= 12) return false;
+  tm.Day = Day;
+  tm.Month = monthIndex + 1;
+  tm.Year = CalendarYrToTm(Year);
+  return true;
 }
